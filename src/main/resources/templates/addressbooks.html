@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Address Books</title></head>
+<body>
+<h1>All Address Books</h1>
+<ul>
+    <li th:each="ab : ${addressbooks}">
+        Address Book [[${ab.id}]]
+    </li>
+</ul>
+</body>
+</html>

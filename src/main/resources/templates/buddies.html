@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Buddies</title></head>
+<body>
+<h1>Buddies in Address Book [[${addressbook.id}]]</h1>
+
+<ul>
+    <li th:each="buddy : ${buddies}">
+        [[${buddy.name}]] – [[${buddy.phoneNumber}]]
+    </li>
+</ul>
+
+<p><a href="/addressbooks">Back to all address books</a></p>
+</body>
+</html>
