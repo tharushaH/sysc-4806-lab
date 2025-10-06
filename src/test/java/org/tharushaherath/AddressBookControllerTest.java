@@ -8,49 +8,21 @@ import java.util.Collections;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
-@SpringBootTest(classes = AddressBookControllerTest.TestApplication.class)
+@SpringBootTest
 @AutoConfigureMockMvc
 class AddressBookControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    // This will be the Mockito.mock(AddressBookRepository.class) provided below
-    @Autowired
+    @MockitoBean  // Replaces @MockBean - part of spring-boot-test since 3.4
     private AddressBookRepository repository;
-
-    @SpringBootConfiguration
-    @Import({ AddressBookController.class, AddressBookControllerTest.MockConfig.class })
-    static class TestApplication {
-    }
-
-    @TestConfiguration
-    static class MockConfig {
-        @Bean
-        public AddressBookRepository addressBookRepository() {
-            return Mockito.mock(AddressBookRepository.class);
-        }
-
-        // Simple resolver so view names (like "addressbooks", "buddies") can be resolved in tests.
-        @Bean
-        public InternalResourceViewResolver viewResolver() {
-            InternalResourceViewResolver r = new InternalResourceViewResolver();
-            r.setPrefix("/templates/"); // not used to load real files here, just resolves names
-            r.setSuffix(".html");
-            return r;
-        }
-    }
 
     @Test
     void shouldReturnAddressBooksView() throws Exception {
@@ -65,7 +37,6 @@ class AddressBookControllerTest {
     @Test
     void shouldReturnBuddiesView() throws Exception {
         AddressBook mockBook = new AddressBook();
-        // if your AddressBook has no setId(), that's fine — controller only needs the Optional non-empty
         given(repository.findById(1L)).willReturn(Optional.of(mockBook));
 
         mockMvc.perform(get("/addressbooks/1"))
